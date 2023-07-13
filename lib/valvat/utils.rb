@@ -35,17 +35,16 @@ class Valvat
     end
 
     def self.deep_symbolize_keys(value)
-      value = value.transform_keys do |key|
-        begin
+      ret = {}
+      value.each_pair{|key, val|
+        key = begin
           key.to_sym
         rescue StandardError => _e
           key
         end
-      end
-
-      value.transform_values! do |val|
-        val.is_a?(Hash) ? deep_symbolize_keys(val) : val
-      end
+        ret[key] = val.is_a?(Hash) ? deep_symbolize_keys(val) : val
+      }
+      ret
     end
   end
 end
