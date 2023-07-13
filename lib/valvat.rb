@@ -8,7 +8,6 @@ require 'valvat/syntax'
 require 'valvat/checksum'
 require 'valvat/version'
 require 'valvat/lookup'
-require 'active_model/validations/valvat_validator' if defined?(ActiveModel)
 
 class Valvat
   def initialize(raw)

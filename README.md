@@ -201,14 +201,6 @@ To see all options and the defaults, take a look at [valvat/configuration](https
 
 ### Loading
 
-When the valvat gem is required and ActiveModel is already loaded, everything will work fine out of the box. If your load order differs just add
-
-```ruby
-require 'active_model/validations/valvat_validator'
-```
-
-after ActiveModel has been loaded.
-
 ### Simple syntax validation
 
 To validate the attribute `vat_number` add this to your model:
