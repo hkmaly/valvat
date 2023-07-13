@@ -21,7 +21,7 @@ class Valvat
       private
 
       def given_check_digit_str
-        str_wo_country[-self.class.check_digit_length..]
+        str_wo_country[-self.class.check_digit_length..-1]
       end
 
       def given_check_digit
@@ -48,7 +48,7 @@ class Valvat
         num.to_s.split('').map(&:to_i).inject(:+)
       end
 
-      def sum_of_figures_for_at_es_it_se(reverse_ints: false)
+      def sum_of_figures_for_at_es_it_se(reverse_ints = false)
         ints = reverse_ints ? [2, 1] : [1, 2]
         sum_figures_by do |fig, i|
           sum_of_squares(fig * (i.modulo(2).zero? ? ints[0] : ints[1]))
@@ -68,7 +68,7 @@ class Valvat
       Valvat::Syntax.validate(vat) && !!(algo.nil? || algo.new(vat).validate)
     end
 
-    ALGORITHMS = Dir[File.join(__dir__, 'checksum', '*.rb')].each_with_object({}) do |path, algos|
+    ALGORITHMS = Dir[File.join(File.dirname(__FILE__), 'checksum', '*.rb')].each_with_object({}) do |path, algos|
       require path.gsub(/\.rb$/, '')
 
       classname = File.basename(path, '.rb').upcase

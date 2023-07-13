@@ -12,13 +12,13 @@ class Valvat
 
         check = alt_check_digit
 
-        (str_wo_country[2..].to_i + 1 + (check / 11)) % 11 == check % 11
+        (str_wo_country[2..-1].to_i + 1 + (check / 11)) % 11 == check % 11
       end
 
       private
 
       def check_digit
-        siren = str_wo_country[2..].to_i
+        siren = str_wo_country[2..-1].to_i
         (12 + ((3 * siren) % 97)) % 97
       end
 

@@ -36,9 +36,11 @@ class Valvat
 
     def self.deep_symbolize_keys(value)
       value = value.transform_keys do |key|
-        key.to_sym
-      rescue StandardError
-        key
+        begin
+          key.to_sym
+        rescue StandardError => _e
+          key
+        end
       end
 
       value.transform_values! do |val|

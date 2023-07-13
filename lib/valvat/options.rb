@@ -9,7 +9,7 @@ class Valvat
       savon: :http
     }.freeze
 
-    def initialize(options, silence: false)
+    def initialize(options, silence = false)
       @options = options || {}
 
       DEPRECATED_KEYS.each do |deprecated, key|

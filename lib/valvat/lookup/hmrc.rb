@@ -64,7 +64,7 @@ class Valvat
       #   "countryCode": "GB"
       # }
       def format_address(address)
-        address&.values&.join("\n")
+        address && address.values && address.values.join("\n")
       end
 
       FAULTS = {
