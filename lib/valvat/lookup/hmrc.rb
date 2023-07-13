@@ -36,6 +36,13 @@ class Valvat
         convert(JSON.parse(body))
       end
 
+      def dig(hash, *list)
+        key = list.shift
+        value = hash[key]
+        return value unless value
+        list.empty? ? value : dig(value, *list)
+      end
+
       # Return a similar format to VIES
       # Main differences are:
       # - request_date is a (more precise) Time instead of Date
@@ -44,10 +51,10 @@ class Valvat
         return build_fault(raw) if raw.key?('code')
 
         {
-          address: format_address(raw.dig('target', 'address')),
-          country_code: raw.dig('target', 'address', 'countryCode'),
-          name: raw.dig('target', 'name'),
-          vat_number: raw.dig('target', 'vatNumber'), valid: true
+          address: format_address(dig(raw, 'target', 'address')),
+          country_code: dig(raw, 'target', 'address', 'countryCode'),
+          name: dig(raw, 'target', 'name'),
+          vat_number: dig(raw, 'target', 'vatNumber'), valid: true
         }.tap do |hash|
           hash[:request_date] = Time.parse(raw['processingDate']) if raw.key?('processingDate')
           hash[:request_identifier] = raw['consultationNumber'] if raw.key?('consultationNumber')
