@@ -5,6 +5,10 @@ valvat
 
 Validates european vat numbers. Standalone or as a ActiveModel validator.
 
+## Difference from upstream
+
+This is modified version of upstream with all ActiveModel code removed and ruby 1.9.3 compatibility restored. I've also tried to rename the gem but seems replacing valvat.gemspec with valvat-standalone.gemspec is not enough. Maybe later.
+
 ## A note on Brexit
 
 Valvat supports validating VAT-IDs from the UK by syntax, checksum and using the HMRC API (for backwards compatibility only with the `:uk` option set to true). Validation against the VIES web service stopped working early 2021.
