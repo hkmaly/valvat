@@ -4,7 +4,7 @@ require_relative 'base'
 require 'date'
 require 'net/http'
 require 'erb'
-require 'rexml'
+require 'nokogiri'
 
 class Valvat
   class Lookup
@@ -48,8 +48,8 @@ class Valvat
       end
 
       def parse(body)
-        doc = REXML::Document.new(body)
-        elements = doc.get_elements('/env:Envelope/env:Body').first.first
+        doc = Nokogiri.XML(body)
+        elements = doc.xpath('/env:Envelope/env:Body').first.children.first.children
         convert_values(elements.each_with_object({}) do |el, hash|
           hash[convert_key(el.name)] = convert_value(el.text)
         end)
