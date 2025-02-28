@@ -1,9 +1,54 @@
 
 ### dev
 
-[full changelog](http://github.com/yolk/valvat/compare/v1.3.0...master)
+[full changelog](http://github.com/yolk/valvat/compare/v2.0.1...master)
+
+### 2.0.1 / 2024-19-06
+
+[full changelog](http://github.com/yolk/valvat/compare/v.2.0.0...v2.0.1)
+
+* Valvat::Options#check_uk_key: Fixed missing silence variable
+* Added vies_down translation for italian locale [Lorenzo Zabot](https://github.com/Uaitt)
+
+### 2.0.0 / 2024-12-06
+
+[full changelog](http://github.com/yolk/valvat/compare/v.1.4.4...v2.0.0)
+
+BREAKING CHANGE: To validate UK VAT numbers you have to provide authentication credentials for the HMRC API. From valvat v2 onwards, simply setting the `:uk` option to `true` will always return `false` (same as the default).
+
+* Added support for HMRC API v2.0 with OAuth 2.0 authentication [Denys Metelov](https://github.com/Skumring)
+* Resolved the rexml security vulnerabilities that affected versions < 3.3.6 by [Riana Ferreira](https://github.com/bad-vegan)
+
+### 1.4.4 / 2024-07-11
+
+[full changelog](http://github.com/yolk/valvat/compare/v1.4.3...v1.4.4)
+
+* Merged missed pull request intended for v1.4.3: Readded translation files back to the gem [Edouard Brière](https://github.com/edouard)
+
+### 1.4.3 / 2024-07-11
+
+[full changelog](http://github.com/yolk/valvat/compare/v1.4.2...v1.4.3)
+
+* Missed to merge pull request. Skip this version.
+
+### 1.4.2 / 2024-07-09
+
+[full changelog](http://github.com/yolk/valvat/compare/v1.4.1...v1.4.2)
+
+* Resolved [rexml security vulnerability](https://github.com/ruby/rexml/security/advisories/GHSA-vg3r-rm7w-2xgh) by [Riana Ferreira](https://github.com/bad-vegan)
+
+### 1.4.1 / 2024-01-08
+
+[full changelog](http://github.com/yolk/valvat/compare/v1.4.0...v1.4.1)
+
+* Fixed incorrect variable usage in SOAP request body by [Jay Tabudlo](https://github.com/jaymoneybird))
+
+### 1.4.0 / 2023-07-20
+
+[full changelog](http://github.com/yolk/valvat/compare/v1.3.0...v1.4.0)
 
 * Valvat.configure: Allow global configuration
+* Update the Cyprus syntax regular expression by [Orien Madgwick](https://github.com/orien))
 * Valvat::Checksum::ES: Fixed issue with VAT ids starting with '*00' #124 / #115 (by [Thomas Scalise](https://github.com/KirtashW17))
 
 ### 1.3.0 / 2023-04-19

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.push File.expand_path('lib', File.dirname(__FILE__))
-require 'valvat/version'
+require_relative 'lib/valvat/version'
 
 Gem::Specification.new do |s|
   s.name                              = 'valvat-standalone'
@@ -18,6 +17,14 @@ Gem::Specification.new do |s|
   s.cert_chain                        = ['certs/mite.pem']
   # s.signing_key                       = File.expand_path('~/.ssh/gem-private_key.pem') if $PROGRAM_NAME =~ /gem\z/
   s.required_ruby_version             = '>= 1.9.3'
+  s.metadata = {
+    'bug_tracker_uri' => "#{s.homepage}/issues",
+    'changelog_uri' => "#{s.homepage}/blob/master/CHANGES.md",
+    'documentation_uri' => "#{s.homepage}/blob/master/README.md",
+    'homepage_uri' => s.homepage,
+    'source_code_uri' => s.homepage,
+    'rubygems_mfa_required' => 'true'
+  }
 
   # s.add_runtime_dependency('rexml', '>= 3.2.5', '< 4.0')
   s.add_runtime_dependency('nokogiri', '>= 1.5.9')

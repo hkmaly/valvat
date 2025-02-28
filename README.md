@@ -11,22 +11,24 @@ This is modified version of upstream with all ActiveModel code removed and ruby 
 
 ## A note on Brexit
 
-Valvat supports validating VAT-IDs from the UK by syntax, checksum and using the HMRC API (for backwards compatibility only with the `:uk` option set to true). Validation against the VIES web service stopped working early 2021.
+Valvat supports validating VAT-IDs from the UK by syntax, checksum and using the HMRC API v2.0. Validation against the VIES web service stopped working early 2021.
+
+Sadly with the deprecation of the HMRC API v1 on January 2025 there is no open accessible web service to validate UK vat numbers anymore. To use the current v2 of the HMRC API you will need to create an account on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/developer/registration) and then apply for production credentials. The second step is a little bit more involved and can take up to ten business days. See the configuration section below how to use valvat with your HMRC authentication credentials.
 
 Northern Ireland received its own VAT number prefix - XI which is supported by VIES web service so any XI-prefixed VAT numbers should be validated as any EU VAT number.
 
 ## Features
 
 * Simple syntax verification
-* Lookup via the VIES web service
-* (Optional) lookup via the HMRC web service (for UK VAT numbers)
+* Lookup via the VIES web service (for EU VAT numbers)
+* Lookup via the HMRC web service (for UK VAT numbers)
 * ActiveModel/Rails integration
 * Works standalone without ActiveModel
 * Minimal runtime dependencies
 * I18n locales for language specific error messages in English, German, French, Spanish, Italian, Portuguese, Polish, Swedish, Dutch, Danish, Czech, Slovakian, Hungarian, Bulgarian, Romanian, Latvian, Catalan, Norwegian, and Finnish.
 * *Experimental* checksum verification
 
-valvat is tested and works with ruby MRI 2.6/2.7/3.0/3.1/3.2, jruby and ActiveModel 5/6/7. If you need support for ruby down to 1.9.3 and ActiveModel 3 and 4 use [v1.0.1](https://github.com/yolk/valvat/tree/v1.0.1).
+valvat is tested and works with ruby MRI 2.6/2.7/3.0/3.1/3.2/3.3, jruby and ActiveModel 5/6/7/8. If you need support for ruby down to 1.9.3 and ActiveModel 3 and 4 use [v1.0.1](https://github.com/yolk/valvat/tree/v1.0.1).
 
 ## Installation
 
@@ -76,14 +78,20 @@ Valvat::Lookup.validate("DE345789003")
 # => true or false or nil
 ```
 
-To keep backwards compatibility lookups of UK VAT numbers against the HMRC API are only performed with the option `:uk` set to true.
+Because the HMRC API requires authentication validation against HMRC is only performed when the option `:uk` is set to a hash containing your authentication credentials. You need to create an account on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/developer/registration) and apply for production credentials to validate UK VAT numbers against HMRC.
 
 ```ruby
-Valvat::Lookup.validate("GB553557881", uk: true)
+Valvat::Lookup.validate(
+  "GB553557881",
+  uk: {
+    client_id: '<client_id>',
+    client_secret: '<client_secret>'
+  }
+)
 # => true or false or nil
 ```
 
-Without this option the lookup of UK VAT number always returns `false`.
+When `:uk` is not set to a hash containing the required authentication credentials the lookup of UK VAT numbers always returns `false`.
 
 *IMPORTANT* Keep in mind that the web service might be offline at some time for all or some member states. If this happens `exists?` or `Valvat::Lookup.validate` will return `nil`. See *Handling of maintenance errors* for further details.
 
@@ -193,9 +201,13 @@ Instead of passing in the same options again and again, Valvat allows to alter i
 
 ```ruby
 Valvat.configure(
-  uk: true,
   raise_error: true,
-  http: { read_timeout: 5 }
+  http: { read_timeout: 5 },
+  uk: {
+    sandbox: true, # Use sandbox mode
+    client_id: <client_id> # Required for HMRC API v2 authentication
+    client_secret: <client_secret> # Required for HMRC API v2 authentication
+  }
 )
 ```
 
@@ -226,7 +238,7 @@ validates :vat_number, valvat: { lookup: true }
 To also perform an lookup via HMRC for UK VAT numbers:
 
 ```ruby
-validates :vat_number, valvat: { lookup: { uk: true } }
+validates :vat_number, valvat: { lookup: { uk: { client_id: '<client_id>', client_secret: '<client_secret>' } } }
 ```
 
 By default this will validate to true if the web service is down. To fail in this case simply add the `:fail_if_down` option:
@@ -326,10 +338,17 @@ This basically just removes trailing spaces and ensures all chars are uppercase.
 
 There seems to be a problem when using the VIES service over IPv6. Sadly this is nothing this gem can address. For details and proposed solutions have a look at [this question on StackOverflow](http://stackoverflow.com/questions/15616833/vies-vat-api-soap-error-ipv6). Thanks to George Palmer for bringing up this issue.
 
+## HMRC API v2.0
+- Version 2 is the recommended version of this API. Version 1 will be removed in January 2025.
+- To use Version 2 of the HMRC API you need to create an account on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/developer/registration) and then apply for production credentials. The second step is a little bit more involved and can take up to ten business days.
+- See more details https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/2.0.
+- New configuration was added to support API v2.0 with OAuth 2.0 Authentication. See configuration section.
+- Valid VAT numbers for HMRC lookup on Sandbox https://github.com/hmrc/vat-registered-companies-api/blob/main/public/api/conf/2.0/test-data/vrn.csv
+
 ## Links
 
 * [VIES web service](http://ec.europa.eu/taxation_customs/vies)
-* [HMRC web service](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/1.0)
+* [HMRC web service](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/2.0)
 * [European vat number formats (german)](http://bzst.de/DE/Steuern_International/USt_Identifikationsnummer/Merkblaetter/Aufbau_USt_IdNr.html)
 * [European vat number formats on Wikipedia](http://en.wikipedia.org/wiki/European_Union_Value_Added_Tax)
 
@@ -339,7 +358,7 @@ https://github.com/yolk/valvat/graphs/contributors
 
 ## BlaBla
 
-Copyright (c) 2011-2023 mite GmbH
+Copyright (c) 2011-2025 mite GmbH
 
 Beyond that, the implementation is licensed under the MIT License.
 

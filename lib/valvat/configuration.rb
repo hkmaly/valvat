@@ -7,7 +7,7 @@ class Valvat
   # Configuration options should be set by passing a hash:
   #
   #   Valvat.configure(
-  #     uk: true
+  #     uk: { client_id: '<client_id>', client_secret: '<client_secret>' }
   #   )
   #
   def self.configure(options)
@@ -42,7 +42,15 @@ class Valvat
 
       # Use lookup via HMRC for VAT numbers from the UK
       # if set to false lookup will always return false for UK VAT numbers
-      uk: false
+      # HMRC options:
+      # :client_id and :client_secret     API credentials for OAuth 2.0 Authentication
+      # :sandbox                          Use sandboxed instead of production API (defaults to false)
+      # See more details https://developer.service.hmrc.gov.uk/api-documentation/docs/development-practices
+      #
+      uk: false,
+
+      # Rate limit for Lookup and HMRC authentication requests
+      rate_limit: 5
     }.freeze
 
     def self.initialize
@@ -53,8 +61,12 @@ class Valvat
       @data[key]
     end
 
+    def dig(*keys)
+      @data.dig(*keys)
+    end
+
     def configure(options)
-      @data = @data.merge(Utils.deep_symbolize_keys(options))
+      @data = Utils.deep_merge(@data, Utils.deep_symbolize_keys(options))
     end
 
     def initialize
