@@ -61,8 +61,15 @@ class Valvat
       @data[key]
     end
 
+    def dig_r(hash, *list)
+      key = list.shift
+      value = hash[key]
+      return value unless value
+      list.empty? ? value : dig_r(value, *list)
+    end
+
     def dig(*keys)
-      @data.dig(*keys)
+      dig_r(@data, *keys)
     end
 
     def configure(options)

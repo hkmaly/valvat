@@ -26,8 +26,15 @@ class Valvat
       @options.key?(key) ? @options[key] : Valvat.config[key]
     end
 
+    def dig_r(hash, *list)
+      key = list.shift
+      value = hash[key]
+      return value unless value
+      list.empty? ? value : dig_r(value, *list)
+    end
+
     def dig(*keys)
-      @options.dig(*keys).nil? ? Valvat.config.dig(*keys) : @options.dig(*keys)
+      dig_r(@options, *keys).nil? ? Valvat.config.dig(*keys) : dig_r(@options, *keys)
     end
 
     private
