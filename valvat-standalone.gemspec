@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'lib/valvat/version'
+$LOAD_PATH.push File.expand_path('lib', File.dirname(__FILE__))
+require 'valvat/version'
 
 Gem::Specification.new do |s|
   s.name                              = 'valvat-standalone'
