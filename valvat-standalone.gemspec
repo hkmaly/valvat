@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Beware: This LOAD_PATH stuff is deliberate, Ruby 1.9.3 doesn't support require_relative here
 $LOAD_PATH.push File.expand_path('lib', File.dirname(__FILE__))
 require 'valvat/version'
 
@@ -18,7 +19,8 @@ Gem::Specification.new do |s|
   s.cert_chain                        = ['certs/mite.pem']
   # s.signing_key                       = File.expand_path('~/.ssh/gem-private_key.pem') if $PROGRAM_NAME =~ /gem\z/
   s.required_ruby_version             = '>= 1.9.3'
-  s.metadata = {
+  # Also, ruby 1.9.3 doesn't support s.metadata here
+  metadata = {
     'bug_tracker_uri' => "#{s.homepage}/issues",
     'changelog_uri' => "#{s.homepage}/blob/master/CHANGES.md",
     'documentation_uri' => "#{s.homepage}/blob/master/README.md",
